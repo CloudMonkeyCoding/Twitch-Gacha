@@ -221,17 +221,20 @@ async def add_gacha_item(interaction: discord.Interaction,
     ):
     
     conn = sqlite3.connect(database_path)
+    print("This worked")
     try:
+        print("weeeeeee")
         SAVE_DIR = "C:/Python/Twitch Gacha/Gacha Drops/"
         file_path = SAVE_DIR + f"{image.id}_{image.filename}"
 
         rarity_ID = get_rarity_ID(rarity)
 
         await image.save(file_path)
-    
+
         conn.execute("""INSERT INTO Gacha_Item VALUES (NULL, ?, ?, ?)""", (rarity_ID, name, file_path))
         await interaction.response.send_message("Something happened!")
     except sqlite3.IntegrityError as e:
+        print("oh noooo")
         await interaction.response.send_message(e)
     conn.commit()
     conn.close
