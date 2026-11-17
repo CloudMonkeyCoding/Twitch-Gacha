@@ -1,0 +1,4 @@
+discord.py
+websocket-client
+websockets
+python-dotenv
