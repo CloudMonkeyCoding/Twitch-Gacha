@@ -520,7 +520,7 @@ async def main():
     main_loop = asyncio.get_running_loop()
 
     async with bot:
-        async with serve(handle_obs, "0.0.0.0", 8765):
+        async with serve(handle_obs, "0.0.0.0", 25447):
             print("WebSocket server started!")
 
             twitch_thread = threading.Thread(
