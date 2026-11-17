@@ -227,7 +227,7 @@ async def add_gacha_item(interaction: discord.Interaction,
         SAVE_DIR = Path(__file__).resolve().parent / "Gacha Drops"
         SAVE_DIR.mkdir(parents=True, exist_ok=True)
         
-        file_path = SAVE_DIR + f"{image.id}_{image.filename}"
+        file_path = SAVE_DIR / f"{image.id}_{image.filename}"
 
         rarity_ID = get_rarity_ID(rarity)
 
