@@ -22,7 +22,6 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 obs_client = None
 main_loop = None
 WS_SECRET = os.getenv("WS_SECRET")
-print(WS_SECRET)
 
 stop_event = threading.Event()
 twitch_socket = None
