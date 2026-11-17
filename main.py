@@ -16,7 +16,7 @@ IMAGE_SOURCE = "Gacha Image"
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 load_dotenv(override=True)
-WS_URL = os.getenv("OBS_WS_URL", "ws://127.0.0.1:8765")
+WS_URL = os.getenv("OBS_WS_URL", "ws://us-lax02.altare.global:25447")
 WS_SECRET = os.getenv("WS_SECRET")
 
 # Thread communication

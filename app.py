@@ -479,7 +479,6 @@ async def on_redemption(event):
         
         await send_gacha_result(username, pulled_item)
 
-
 async def handle_obs(websocket):
     global obs_client
 
@@ -515,14 +514,13 @@ async def handle_obs(websocket):
 
         print("OBS disconnected!")
 
-
 async def main():
     global main_loop
 
     main_loop = asyncio.get_running_loop()
 
     async with bot:
-        async with serve(handle_obs, "127.0.0.1", 8765):
+        async with serve(handle_obs, "0.0.0.0", 8765):
             print("WebSocket server started!")
 
             twitch_thread = threading.Thread(
