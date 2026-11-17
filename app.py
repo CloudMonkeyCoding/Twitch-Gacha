@@ -236,6 +236,9 @@ async def add_gacha_item(interaction: discord.Interaction,
     except sqlite3.IntegrityError as e:
         print("oh noooo")
         await interaction.response.send_message(e)
+    except Exception as e:
+        print("oh noooo")
+        await interaction.response.send_message(e)
     conn.commit()
     conn.close
 
