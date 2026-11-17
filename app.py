@@ -231,7 +231,7 @@ async def add_gacha_item(interaction: discord.Interaction,
 
         rarity_ID = get_rarity_ID(rarity)
 
-        await image.save(file_path)
+        await image.save(str(file_path))
 
         conn.execute("""INSERT INTO Gacha_Item VALUES (NULL, ?, ?, ?)""", (rarity_ID, name, file_path))
         await interaction.response.send_message("Something happened!")
