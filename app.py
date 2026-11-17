@@ -10,6 +10,7 @@ import json
 import asyncio
 import hmac
 import urllib.request
+from pathlib import Path
 # from dotenv import load_dotenv
 
 
@@ -223,7 +224,9 @@ async def add_gacha_item(interaction: discord.Interaction,
     print("This worked")
     try:
         print("weeeeeee")
-        SAVE_DIR = "C:/Python/Twitch Gacha/Gacha Drops/"
+        SAVE_DIR = Path(__file__).resolve().parent / "Gacha Drops"
+        SAVE_DIR.mkdir(parents=True, exist_ok=True)
+        
         file_path = SAVE_DIR + f"{image.id}_{image.filename}"
 
         rarity_ID = get_rarity_ID(rarity)
