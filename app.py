@@ -483,6 +483,7 @@ async def on_redemption(event):
 
     if reward == "Gacha test":
         pulled_item = process_gacha_pull(event["user_id"], event["id"])
+        print(run_query("SELECT * FROM Gacha_Item"))
         item_filename = run_query(f"SELECT Image_Path From Gacha_Item WHERE Name = {pulled_item}")
         
         await send_gacha_result(username, pulled_item, item_filename)
