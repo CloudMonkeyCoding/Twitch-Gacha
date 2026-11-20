@@ -67,7 +67,7 @@ def hide_gacha():
 def show_gacha(username, data):
     change_text(f"{username} rolled the Gacha!")
     set_popup_visible(True)
-    change_image(data['image_filename'])
+    change_image(data['item_filename'])
     obs.timer_remove(hide_gacha)
     obs.timer_add(hide_gacha, 10000)
 
