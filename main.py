@@ -57,9 +57,6 @@ def update_source(source_name, key, value):
     finally:
         obs.obs_source_release(source)
 
-def change_image(file_path):
-    update_source(IMAGE_SOURCE, "file", file_path)
-
 def hide_gacha():
     obs.timer_remove(hide_gacha)
     set_popup_visible(False)
