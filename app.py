@@ -156,6 +156,8 @@ def process_gacha_pull(twitch_user_id, redemption_id):
         on g.Rarity_ID = r.Rarity_ID
         """)
     
+    print (gacha_items)
+    
     items = []
     weights =[]
     
