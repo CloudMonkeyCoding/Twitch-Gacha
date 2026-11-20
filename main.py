@@ -2,9 +2,9 @@ import obspython as obs
 import queue
 import threading
 import urllib.request
+import base64
 import json
 import websocket
-import random
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -62,49 +62,13 @@ def change_image(file_path):
 
 def hide_gacha():
     obs.timer_remove(hide_gacha)
-    obs.timer_remove(gacha_shift_frame)
     set_popup_visible(False)
 
-def show_gacha(username):
+def show_gacha(username, data):
     change_text(f"{username} rolled the Gacha!")
     set_popup_visible(True)
-    gacha_animation()
     obs.timer_remove(hide_gacha)
     obs.timer_add(hide_gacha, 10000)
-
-def gacha_pull():
-    obs.timer_remove(gacha_pull)
-
-    ITEMS = {
-        "5-Star": os.listdir(os.path.join(os.path.dirname(__file__), "Gacha Drops"))
-    }
-    
-    RATES = {"5-Star": 0.85}
-    
-    rarities = list(RATES.keys())
-    weights = list(RATES.values())
-    rarity = random.choices(rarities, weights=weights, k=1)[0]
-    reward = random.choice(ITEMS[rarity])
-    
-    change_image(os.path.join(os.path.join(os.path.dirname(__file__), "Gacha Drops"), reward))
-    
-    return f"{rarity}: {reward}"
-
-def gacha_animation():
-    obs.timer_add(gacha_shift_frame, 10)
-    obs.timer_add(stop_gacha_animation, 4000)
-
-def stop_gacha_animation():
-    obs.timer_remove(gacha_shift_frame)
-    obs.timer_remove(stop_gacha_animation)
-
-def gacha_shift_frame():
-    directory = os.path.join(os.path.dirname(__file__), "Gacha Drops")
-    gacha_drops = os.listdir(directory)
-    
-    image = random.choice(gacha_drops)
-    change_image(os.path.join(directory, image))
-
 
 # def script_properties():
 #     props = obs.obs_properties_create()
@@ -115,14 +79,37 @@ def gacha_shift_frame():
 
 #     return props
 
-def download_gacha_images():
-    pass
+def download_gacha_image(data):
+    file_path = Path(__file__).resolve().parent / "Gacha Drops"
+    file_path.mkdir(parents=True, exist_ok=True)
+    
+    filename = data['image_filename']
+    
+    if Path(filename).suffix.lower() not in {
+        ".png", ".jpg", ".jpeg", ".webp", ".gif"
+    }:
+        raise ValueError("Unsupported image format")
+
+    image_path = file_path / filename
+
+    if image_path.is_file():
+        return str(image_path)
+    
+    image_bytes = base64.b64decode(
+        data["image_data"],
+        validate=True
+    )
+    
+    temp_path = image_path.with_name(filename + ".part")
+    temp_path.write_bytes(image_bytes)
+    temp_path.replace(image_path)
+
+    return str(image_path)
 
 def script_load(settings):
     set_popup_visible(False)
     obs.script_log(obs.LOG_INFO, "Script loaded mmmm")
     obs.script_log(obs.LOG_INFO, WS_URL)
-    
     
     obs.timer_add(process_events, 100)
 
@@ -147,10 +134,7 @@ def script_unload():
         obs_socket.close()
 
     obs.timer_remove(process_events)
-    obs.timer_remove(gacha_pull)
     obs.timer_remove(hide_gacha)
-    obs.timer_remove(gacha_shift_frame)
-    obs.timer_remove(stop_gacha_animation)
 
 current_gacha = None
 
@@ -178,14 +162,25 @@ def listen_to_server():
         ws.send(json.dumps({
             "token": WS_SECRET
         }))
+        
+        #Download all images on startup
+        ws.send(json.dumps({
+            "type": "sync_images"
+        }))
 
         events.put(("log", "Connected to WebSocket!"))
 
     def on_message(ws, message):
         try:
             data = json.loads(message)
+            
+            if data.get("type") == "gacha_image":
+                download_gacha_image(data)
 
-            if data.get("type") == "gacha":
+            elif data.get("type") == "sync_complete":
+                print("yippeee download worked")
+
+            elif data.get("type") == "gacha":
                 events.put(("gacha", data))
 
         except Exception as error:

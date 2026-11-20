@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import os
 import sqlite3
+import base64
+import hashlib
 import threading
 import websocket
 import random
@@ -11,8 +13,6 @@ import asyncio
 import hmac
 import urllib.request
 from pathlib import Path
-# from dotenv import load_dotenv
-
 
 from websockets.asyncio.server import serve
 
@@ -221,15 +221,13 @@ async def add_gacha_item(interaction: discord.Interaction,
     ):
     
     conn = sqlite3.connect(database_path)
-    print("This worked")
+    
+    rarity_ID = get_rarity_ID(rarity)
     try:
-        print("weeeeeee")
         SAVE_DIR = Path(__file__).resolve().parent / "Gacha Drops"
         SAVE_DIR.mkdir(parents=True, exist_ok=True)
         
         file_path = SAVE_DIR / f"{image.id}_{image.filename}"
-
-        rarity_ID = get_rarity_ID(rarity)
 
         await image.save(str(file_path))
 
@@ -262,8 +260,6 @@ async def edit_gacha_item(interaction: discord.Interaction,
     try: 
         SAVE_DIR = "C:/Python/Twitch Gacha/Gacha Drops/"
         file_path = SAVE_DIR + f"{image.id}_{image.filename}"
-
-        rarity_ID = get_rarity_ID(rarity)
 
         await image.save(file_path)
         
@@ -487,6 +483,39 @@ async def on_redemption(event):
         
         await send_gacha_result(username, pulled_item)
 
+async def send_all_gacha_images(ws):
+    conn = sqlite3.connect(database_path)
+    
+    images = conn.execute("""
+        SELECT Gacha_Item_ID, Image_Path
+        FROM Gacha_Item
+    """).fetchall()
+    
+    for item_id, image_path in images:
+        try:
+            path = Path(image_path)
+            
+            image_bytes = await asyncio.to_thread(path.read_bytes)
+            
+            image_hash = hashlib.sha256(image_bytes).hexdigest()[:16]
+            
+            filename = f"{item_id}-{image_hash}{path.suffix.lower()}"
+            
+            await websocket.send(json.dumps({
+                "type": "gacha_image",
+                "image_filename": filename,
+                "image_data": base64.b64encode(
+                    image_bytes
+                ).decode("ascii")
+            }))
+            
+        except Exception as error:
+            print(f"Failed to send {image_path}: {error}")
+    
+    await websocket.send(json.dumps({
+        "type": "sync_complete",
+    }))
+
 async def handle_obs(websocket):
     global obs_client
 
@@ -511,7 +540,11 @@ async def handle_obs(websocket):
         obs_client = websocket
         print("OBS connected!")
 
-        await websocket.wait_closed()
+        async for message in websocket:
+            data = json.loads(message)
+
+            if data.get("type") == "sync_images":
+                await send_all_gacha_images(websocket)
 
     except Exception as error:
         print("OBS connection error:", error)
