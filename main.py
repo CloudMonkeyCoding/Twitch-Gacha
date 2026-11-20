@@ -57,6 +57,9 @@ def update_source(source_name, key, value):
     finally:
         obs.obs_source_release(source)
 
+def change_image(file_path):
+    update_source(IMAGE_SOURCE, "file", file_path)
+
 def hide_gacha():
     obs.timer_remove(hide_gacha)
     set_popup_visible(False)
@@ -64,6 +67,8 @@ def hide_gacha():
 def show_gacha(username, data):
     change_text(f"{username} rolled the Gacha!")
     set_popup_visible(True)
+    print(data)
+    #change_image(data[''])
     obs.timer_remove(hide_gacha)
     obs.timer_add(hide_gacha, 10000)
 
@@ -143,7 +148,7 @@ def process_events():
 
         if event_type == "gacha":
             current_gacha = data
-            show_gacha(data["username"], data["item"])
+            show_gacha(data["username"], data)
 
         elif event_type == "log":
             obs.script_log(obs.LOG_INFO, data)

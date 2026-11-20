@@ -200,7 +200,7 @@ def create_user(twitch_user_id):
     
     return run_query(f"SELECT User_ID FROM User WHERE Twitch_ID = {twitch_user_id}")[0][0]
 
-async def send_gacha_result(username, pulled_item):
+async def send_gacha_result(username, pulled_item, filename):
     if obs_client is None:
         print("OBS is not connected!")
         return
@@ -208,7 +208,8 @@ async def send_gacha_result(username, pulled_item):
     await obs_client.send(json.dumps({
         "type": "gacha",
         "username": username,
-        "item": pulled_item #Name of item, not id
+        "item": pulled_item, #Name of item, not id
+        "item_filename": filename
     }))
 
 @bot.tree.command(
@@ -482,8 +483,9 @@ async def on_redemption(event):
 
     if reward == "Gacha test":
         pulled_item = process_gacha_pull(event["user_id"], event["id"])
+        item_filename = run_query(f"SELECT Image_Path From Gacha_Item WHERE Name = {pulled_item}")
         
-        await send_gacha_result(username, pulled_item)
+        await send_gacha_result(username, pulled_item, item_filename)
 
 async def send_all_gacha_images(ws):
     conn = sqlite3.connect(database_path)
