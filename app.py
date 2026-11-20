@@ -501,7 +501,7 @@ async def send_all_gacha_images(ws):
             
             filename = f"{item_id}-{image_hash}{path.suffix.lower()}"
             
-            await websocket.send(json.dumps({
+            await ws.send(json.dumps({
                 "type": "gacha_image",
                 "image_filename": filename,
                 "image_data": base64.b64encode(
@@ -512,7 +512,7 @@ async def send_all_gacha_images(ws):
         except Exception as error:
             print(f"Failed to send {image_path}: {error}")
     
-    await websocket.send(json.dumps({
+    await ws.send(json.dumps({
         "type": "sync_complete",
     }))
 
