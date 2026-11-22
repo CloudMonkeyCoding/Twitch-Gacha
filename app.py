@@ -502,13 +502,9 @@ async def send_all_gacha_images(ws):
             
             image_bytes = await asyncio.to_thread(path.read_bytes)
             
-            image_hash = hashlib.sha256(image_bytes).hexdigest()[:16]
-            
-            filename = f"{item_id}-{image_hash}{path.suffix.lower()}"
-            
             await ws.send(json.dumps({
                 "type": "gacha_image",
-                "image_filename": filename,
+                "image_filename": path.name,
                 "image_data": base64.b64encode(
                     image_bytes
                 ).decode("ascii")

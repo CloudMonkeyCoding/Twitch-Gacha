@@ -67,10 +67,17 @@ def hide_gacha():
 def show_gacha(username, data):
     change_text(f"{username} rolled the Gacha!")
     set_popup_visible(True)
-    change_image(data['item_filename'])
+    
+    local_path = (
+        Path(__file__).resolve().parent
+        / "Gacha Drops"
+        / Path(data["item_filename"]).name
+    )
+    
+    change_image(str(local_path))
     obs.timer_remove(hide_gacha)
-    obs.timer_add(hide_gacha, 10000)
-
+    obs.timer_add(hide_gacha, 5000)
+    
 # def script_properties():
 #     props = obs.obs_properties_create()
 
