@@ -166,6 +166,7 @@ def process_gacha_pull(twitch_user_id, redemption_id):
         weights.append(item[1])
     
     pulled_item = random.choices(items, weights=weights, k=1)[0]
+    print(pulled_item)
     
     gacha_id = run_query(f"SELECT Gacha_Item_ID FROM Gacha_Item WHERE Name = '{pulled_item}'")[0][0]
     user_id = create_user(twitch_user_id)
