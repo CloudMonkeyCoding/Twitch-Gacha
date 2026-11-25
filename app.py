@@ -375,7 +375,7 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
     conn = sqlite3.connect(database_path)
     try:
         history = run_query(f"SELECT * FROM Gacha_Pull JOIN User WHERE Twitch_ID = {twitch}")
-
+        print(history)
         await interaction.response.send_message(history)
 
     except sqlite3.ProgrammingError as e:
