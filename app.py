@@ -183,7 +183,7 @@ def process_gacha_pull(twitch_user_id, redemption_id):
     return pulled_item
 
 def pull_history(twitch_user_id):
-    pull_history = run_query(f"SELECT * FROM Gacha_Pull WHERE Twitch_User_ID = {twitch_user_id}")
+    pull_history = run_query(f"SELECT * FROM Gacha_Pull JOIN User WHERE User.User_ID = {twitch_user_id}")
     
     return pull_history
 
