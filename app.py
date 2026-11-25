@@ -382,9 +382,11 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
         await interaction.response.send_message(e)
         
     except:
-        await interaction.response.send_message("Something went wrong")
+        await interaction.response.send_message(e)
 
     conn.close()
+
+
 
 def validate_token():
     request = urllib.request.Request(
