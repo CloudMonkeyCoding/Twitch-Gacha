@@ -183,7 +183,7 @@ def process_gacha_pull(twitch_user_id, redemption_id):
     return pulled_item
 
 def pull_history(twitch_user_id):
-    pull_history = run_query(f"SELECT * FROM Gacha_Pull")
+    pull_history = run_query(f"SELECT * FROM Gacha_Pull WHERE Twitch_User_ID = {twitch_user_id}")
     
     return pull_history
 
@@ -357,6 +357,26 @@ async def delete_rarity(interaction: discord.Interaction, name: str):
         conn.execute("""DELETE FROM Rarity WHERE Name = ?""", (name, ))
         conn.commit()
         await interaction.response.send_message("Something happened! (lowkey this Cloudy guy is too lazy to write these messages)")
+
+    except sqlite3.ProgrammingError as e:
+        await interaction.response.send_message(e)
+        
+    except:
+        await interaction.response.send_message("Something went wrong")
+
+    conn.close()
+    
+@bot.tree.command(
+    name="view_pull_history",
+    description="This lets you view your pull history!"
+)
+@commands.has_permissions(administrator=True)
+async def view_pull_history(interaction: discord.Interaction, twitch: str):
+    conn = sqlite3.connect(database_path)
+    try:
+        history = run_query(f"SELECT * FROM Gacha_Pull JOIN User WHERE Twitch_ID = {twitch}")
+
+        await interaction.response.send_message(history)
 
     except sqlite3.ProgrammingError as e:
         await interaction.response.send_message(e)
