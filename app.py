@@ -369,7 +369,7 @@ async def delete_rarity(interaction: discord.Interaction, name: str):
 async def view_pull_history(interaction: discord.Interaction, twitch: str):
     conn = sqlite3.connect(database_path)
     try:
-        history = run_query(f"SELECT gi.Gacha_Name FROM Gacha_Pull as g JOIN User as u ON g.User_ID = u.User_ID JOIN Gacha_Item as gi ON g.Gacha_Item_ID = gi.Gacha_Item_ID WHERE u.Twitch_ID = {twitch}")
+        history = run_query(f"SELECT gi.Name FROM Gacha_Pull as g JOIN User as u ON g.User_ID = u.User_ID JOIN Gacha_Item as gi ON g.Gacha_Item_ID = gi.Gacha_Item_ID WHERE u.Twitch_ID = {twitch}")
         print(history)
         await interaction.response.send_message(history)
 
