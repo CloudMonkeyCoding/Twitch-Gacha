@@ -381,7 +381,8 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
     except sqlite3.ProgrammingError as e:
         await interaction.response.send_message(e)
         
-    except:
+    except Exception as e:
+        
         await interaction.response.send_message(e)
 
     conn.close()
