@@ -182,11 +182,6 @@ def process_gacha_pull(twitch_user_id, redemption_id):
     
     return pulled_item
 
-def pull_history(twitch_user_id):
-    pull_history = run_query(f"SELECT * FROM Gacha_Pull JOIN User WHERE User.User_ID = {twitch_user_id}")
-    
-    return pull_history
-
 def check_if_user_exists(twitch_user_id):
     return bool(run_query(f"SELECT EXISTS(SELECT 1 FROM User WHERE Twitch_ID = {twitch_user_id} LIMIT 1)")[0][0])
 
@@ -374,7 +369,7 @@ async def delete_rarity(interaction: discord.Interaction, name: str):
 async def view_pull_history(interaction: discord.Interaction, twitch: str):
     conn = sqlite3.connect(database_path)
     try:
-        history = run_query(f"SELECT * FROM Gacha_Pull JOIN User WHERE Twitch_ID = {twitch}")
+        history = run_query(f"SELECT * FROM Gacha_Pull as g JOIN User as u ON g.User_ID = u.User_ID WHERE u.Twitch_ID = {twitch}")
         print(history)
         await interaction.response.send_message(history)
 
