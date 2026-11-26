@@ -401,7 +401,7 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
 @commands.has_permissions(administrator=True)
 async def reset_database(interaction: discord.Interaction):
     try: 
-        os.remove("")
+        os.remove("gacha.db")
         await interaction.response.send_message("Removed the OS, TEEHEE")
     except Exception as e:
         await interaction.response.send_message(e)
