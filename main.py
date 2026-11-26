@@ -10,7 +10,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 OVERLAY_SCENE = "VTubing"
-GROUP_SOURCE = "Gacha Overlay"
+IMAGE_GROUP_SOURCE = "Gacha Images"
+TEXT_GROUP_SOURCE = "Gacha Text"
 TEXT_SOURCES = ["G Text 1", "G Text 2", "G Text 3", "G Text 4", "G Text 5"]
 IMAGE_SOURCES = ["G Image 1", "G Image 2", "G Image 3", "G Image 4", "G Image 5"]
 
@@ -30,9 +31,11 @@ def script_description():
 def set_popup_visible(visible):
     scene_source = obs.obs_get_source_by_name(OVERLAY_SCENE)
     scene = obs.obs_scene_from_source(scene_source)
-    item = obs.obs_scene_find_source(scene, GROUP_SOURCE)
+    item = obs.obs_scene_find_source(scene, IMAGE_GROUP_SOURCE)
+    text = obs.obs_scene_find_source(scene, TEXT_GROUP_SOURCE)
 
     obs.obs_sceneitem_set_visible(item, visible)
+    obs.obs_sceneitem_set_visible(text, visible)
 
 def change_text(source: int, text: str):
     update_source(TEXT_SOURCES[source], "text", text)

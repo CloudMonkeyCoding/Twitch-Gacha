@@ -508,7 +508,7 @@ async def on_redemption(event):
             pulled_items.append(pulled_item)
             
             item_filename = run_query(f"SELECT Image_Path From Gacha_Item WHERE Name = '{pulled_item}'")[0][0]
-            item_filenames.apppend(item_filename)
+            item_filenames.append(item_filename)
         
         await send_gacha_result(username, pulled_items, item_filenames)
 
