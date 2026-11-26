@@ -395,7 +395,7 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
     conn.close()
 
 @bot.tree.command(
-    name="Reset Database",
+    name="reset_database",
     description="RESET DATABASE! BIG BAD DANGEROUS COMMAND!!!!!"
 )
 @commands.has_permissions(administrator=True)
