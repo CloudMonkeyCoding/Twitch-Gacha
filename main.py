@@ -68,10 +68,14 @@ def hide_gacha():
     set_popup_visible(False)
 
 def show_gacha(username, data):
-    change_text(1, f"{username} rolled the Gacha!")
+    
     set_popup_visible(True)
     
     for i in range(len(IMAGE_SOURCES)):
+        print(f"{username} rolled the Gacha!")
+        item = data["items"][i]
+        change_text(i, f"{item}")
+        
         local_path = (
             Path(__file__).resolve().parent
             / "Gacha Drops"

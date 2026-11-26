@@ -177,6 +177,23 @@ def process_gacha_pull(twitch_user_id, redemption_id):
     except Exception as e:
         print(e)
     
+    # Quantity INTEGER NOT NULL DEFAULT 1
+    #     CHECK (Quantity > 0),
+
+    # FOREIGN KEY (User_ID)
+    #     REFERENCES User(User_ID),
+
+    # FOREIGN KEY (Gacha_Item_ID)
+    #     REFERENCES Gacha_Item(Gacha_Item_ID),
+
+    # UNIQUE (User_ID, Gacha_Item_ID)
+        
+    try:
+        conn.execute("""INSERT INTO Inventory_Item VALUES (?, ?, 1) """, (user_id, gacha_id))
+        print("This worked too YIPPEEEEEEEE")
+    except Exception as e:
+        print(e)
+    
     conn.commit()
     conn.close()
     
