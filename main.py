@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 
 OVERLAY_SCENE = "VTubing"
 GROUP_SOURCE = "Gacha Overlay"
-TEXT_SOURCE = "Gacha Text"
-IMAGE_SOURCE = "Gacha Image"
+TEXT_SOURCES = ["G Text 1", "G Text 2", "G Text 3", "G Text 4", "G Text 5"]
+IMAGE_SOURCES = ["G Image 1", "G Image 2", "G Image 3", "G Image 4", "G Image 5"]
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 load_dotenv(override=True)
@@ -34,8 +34,11 @@ def set_popup_visible(visible):
 
     obs.obs_sceneitem_set_visible(item, visible)
 
-def change_text(text):
-    update_source(TEXT_SOURCE, "text", text)
+def change_text(source: int, text: str):
+    update_source(TEXT_SOURCES[source], "text", text)
+
+def change_image(source: int, file_path):
+    update_source(IMAGE_SOURCES[source], "file", file_path)
 
 def update_source(source_name, key, value):
     source = obs.obs_get_source_by_name(source_name)
@@ -57,24 +60,22 @@ def update_source(source_name, key, value):
     finally:
         obs.obs_source_release(source)
 
-def change_image(file_path):
-    update_source(IMAGE_SOURCE, "file", file_path)
-
 def hide_gacha():
     obs.timer_remove(hide_gacha)
     set_popup_visible(False)
 
 def show_gacha(username, data):
-    change_text(f"{username} rolled the Gacha!")
+    change_text(1, f"{username} rolled the Gacha!")
     set_popup_visible(True)
     
-    local_path = (
-        Path(__file__).resolve().parent
-        / "Gacha Drops"
-        / Path(data["item_filename"]).name
-    )
-    
-    change_image(str(local_path))
+    for i in range(len(IMAGE_SOURCES)):
+        local_path = (
+            Path(__file__).resolve().parent
+            / "Gacha Drops"
+            / Path(data["item_filenames"][i]).name
+        )
+        
+        change_image(i, str(local_path))
     obs.timer_remove(hide_gacha)
     obs.timer_add(hide_gacha, 5000)
     

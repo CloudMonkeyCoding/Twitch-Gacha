@@ -204,8 +204,8 @@ async def send_gacha_result(username, pulled_item, filename):
     await obs_client.send(json.dumps({
         "type": "gacha",
         "username": username,
-        "item": pulled_item, #Name of item, not id
-        "item_filename": filename
+        "items": pulled_item, #Name of item, not id
+        "item_filenames": filename
     }))
 
 @bot.tree.command(
@@ -501,11 +501,16 @@ async def on_redemption(event):
     print(f"{username} redeemed {reward}")
 
     if reward == "Gacha test":
-        pulled_item = process_gacha_pull(event["user_id"], event["id"])
-        print(run_query("SELECT * FROM Gacha_Item"))
-        item_filename = run_query(f"SELECT Image_Path From Gacha_Item WHERE Name = '{pulled_item}'")[0][0]
+        pulled_items = []
+        item_filenames = []
+        for i in range(5):
+            pulled_item = process_gacha_pull(event["user_id"], event["id"])
+            pulled_items.append(pulled_item)
+            
+            item_filename = run_query(f"SELECT Image_Path From Gacha_Item WHERE Name = '{pulled_item}'")[0][0]
+            item_filenames.apppend(item_filename)
         
-        await send_gacha_result(username, pulled_item, item_filename)
+        await send_gacha_result(username, pulled_items, item_filenames)
 
 async def send_all_gacha_images(ws):
     conn = sqlite3.connect(database_path)
