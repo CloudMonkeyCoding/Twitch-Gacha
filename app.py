@@ -399,7 +399,7 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
     description="RESET DATABASE! BIG BAD DANGEROUS COMMAND!!!!!"
 )
 @commands.has_permissions(administrator=True)
-async def view_pull_history(interaction: discord.Interaction, twitch: str):
+async def reset_database(interaction: discord.Interaction, twitch: str):
     try: 
         os.remove("")
     except Exception as e:
