@@ -187,12 +187,18 @@ def process_gacha_pull(twitch_user_id, redemption_id):
     #     REFERENCES Gacha_Item(Gacha_Item_ID),
 
     # UNIQUE (User_ID, Gacha_Item_ID)
-        
-    try:
-        conn.execute("""INSERT INTO Inventory_Item VALUES (NULL, ?, ?, 1) """, (user_id, gacha_id))
-        print("This worked too YIPPEEEEEEEE")
-    except Exception as e:
-        print(e)
+    
+    if bool(run_query("SELECT EXISTS(SELECT 1 FROM Inventory_Item WHERE User_ID = ? AND Gacha_Item_ID = ?)", (user_id, gacha_id))[0][0]):
+        try:
+            conn.execute("""INSERT INTO Inventory_Item VALUES (NULL, ?, ?, 1) """, (user_id, gacha_id))
+            print("This worked too YIPPEEEEEEEE")
+        except Exception as e:
+            print(e)
+    else:
+        try:
+            conn.execute("""UPDATE Inventory_Item SET Quantity = Quantity + 1 WHERE User_ID = ? AND Gacha_Item_ID = ?""", (user_id, gacha_id))
+        except Exception as e:
+            print(e)
     
     conn.commit()
     conn.close()
