@@ -3,7 +3,6 @@ from discord.ext import commands
 import os
 import sqlite3
 import base64
-import hashlib
 import threading
 import websocket
 import random
@@ -139,7 +138,7 @@ def get_rarity_ID(rarity):
     id = cursor.execute("SELECT Rarity_ID FROM Rarity WHERE Name = ?", (rarity, ))
     id = cursor.fetchone()[0]
     conn.close()
-    
+
     return id
 
 def get_all_gacha_items():

@@ -1,7 +1,6 @@
 import obspython as obs
 import queue
 import threading
-import urllib.request
 import base64
 import json
 import websocket
