@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS Gacha_Pull (
     User_ID INTEGER NOT NULL,
     Gacha_Item_ID INTEGER NOT NULL,
     Date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    Twitch_Redemption_ID TEXT UNIQUE,
+    Twitch_Redemption_ID TEXT,
 
     FOREIGN KEY (User_ID)
         REFERENCES User(User_ID),
@@ -176,17 +176,6 @@ def process_gacha_pull(twitch_user_id, redemption_id):
         print("This worked yippee yippee yippee")
     except Exception as e:
         print(e)
-    
-    # Quantity INTEGER NOT NULL DEFAULT 1
-    #     CHECK (Quantity > 0),
-
-    # FOREIGN KEY (User_ID)
-    #     REFERENCES User(User_ID),
-
-    # FOREIGN KEY (Gacha_Item_ID)
-    #     REFERENCES Gacha_Item(Gacha_Item_ID),
-
-    # UNIQUE (User_ID, Gacha_Item_ID)
     
     if not bool(run_query(f"SELECT EXISTS(SELECT 1 FROM Inventory_Item WHERE User_ID = {user_id} AND Gacha_Item_ID = {gacha_id})")[0][0]):
         try:
@@ -405,7 +394,18 @@ async def view_pull_history(interaction: discord.Interaction, twitch: str):
 
     conn.close()
 
-
+@bot.tree.command(
+    name="Reset Database",
+    description="RESET DATABASE! BIG BAD DANGEROUS COMMAND!!!!!"
+)
+@commands.has_permissions(administrator=True)
+async def view_pull_history(interaction: discord.Interaction, twitch: str):
+    try: 
+        os.remove("")
+    except Exception as e:
+        print(e)
+    
+    initialize_database()
 
 def validate_token():
     request = urllib.request.Request(
