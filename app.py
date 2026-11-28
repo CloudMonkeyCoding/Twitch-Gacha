@@ -406,6 +406,15 @@ async def reset_database(interaction: discord.Interaction):
         await interaction.response.send_message(e)
     
     initialize_database()
+    
+@bot.tree.command(
+    name="reset_database",
+    description="RESET DATABASE! BIG BAD DANGEROUS COMMAND!!!!!"
+)
+@commands.has_permissions(administrator=True)
+async def check_inventory(interaction: discord.Interaction, twitch: str):
+    query = run_query(f"SELECT * FROM Inventory_Item as i JOIN User as u ON i.User_ID = u.User_ID WHERE u.Twitch_ID = {twitch}")
+    await interaction.response.send_message(query)
 
 def validate_token():
     request = urllib.request.Request(
