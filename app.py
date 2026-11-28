@@ -408,7 +408,7 @@ async def reset_database(interaction: discord.Interaction):
     initialize_database()
     
 @bot.tree.command(
-    name="reset_database",
+    name="check_inventory",
     description="RESET DATABASE! BIG BAD DANGEROUS COMMAND!!!!!"
 )
 @commands.has_permissions(administrator=True)
